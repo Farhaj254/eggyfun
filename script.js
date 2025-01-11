@@ -131,3 +131,16 @@ document.addEventListener('keydown', function (e) {
     }
 });
 
+document.addEventListener("DOMContentLoaded", () => {
+    const gameCards = document.querySelectorAll(".game-card");
+
+    gameCards.forEach((card) => {
+        card.addEventListener("click", () => {
+            const gameTitle = card.getAttribute("data-title");
+            const gameUrl = card.getAttribute("data-url");
+
+            // Update URL with game details
+            window.location.href = `play.html?title=${encodeURIComponent(gameTitle)}&url=${encodeURIComponent(gameUrl)}`;
+        });
+    });
+});
