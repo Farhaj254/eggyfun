@@ -3,32 +3,40 @@
         let isLiked = false;
         let isDisliked = false;
 
-        function loadGame(gameTitle, gameUrl) {
-    const iframe = document.querySelector("iframe");
-    const gameTitleElement = document.getElementById("game-title");
+       document.addEventListener("DOMContentLoaded", function () {
+    const gameCards = document.querySelectorAll(".game-card");
+    const gameFrame = document.getElementById("game-frame");
 
-    // Update the iframe source and title
-    gameTitleElement.textContent = gameTitle;
-    iframe.src = gameUrl;
+    function loadGame(url, title) {
+        if (gameFrame) {
+            // Update the iframe source
+            gameFrame.src = url;
 
-    // Update the URL without reloading the page
-    window.history.pushState(null, "", `?game=${encodeURIComponent(gameUrl)}`);
-}
+            // Update the page title
+            document.title = `Playing: ${title}`;
 
-// Load game based on URL when the page loads or reloads
-window.onload = function () {
-    const params = new URLSearchParams(window.location.search);
-    const gameUrl = params.get("game");
-
-    if (gameUrl) {
-        const iframe = document.querySelector("iframe");
-        iframe.src = gameUrl;
-
-        const gameTitleElement = document.getElementById("game-title");
-        gameTitleElement.textContent = "Game"; // Optional default name
+            // Update the browser URL without refreshing
+            history.pushState({ game: title }, title, `?game=${title}`);
+        }
     }
-};
 
+    // Add click event listeners to all game cards
+    gameCards.forEach(card => {
+        card.addEventListener("click", function () {
+            const url = card.getAttribute("data-url");
+            const title = card.getAttribute("data-title");
+
+            loadGame(url, title);
+        });
+    });
+
+    // Handle back/forward navigation
+    window.addEventListener("popstate", function (event) {
+        if (event.state && event.state.game) {
+            loadGame(`media/games/${event.state.game}.html`, event.state.game);
+        }
+    });
+});
 
         function toggleLike() {
             const likeButton = document.getElementById("like-button");
